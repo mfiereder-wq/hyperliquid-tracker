@@ -2,6 +2,8 @@
 
 import { useState, useCallback } from 'react';
 import { WalletInput } from './WalletInput';
+import { WalletFavorites } from './WalletFavorites';
+import { Donation } from './Donation';
 import { StatsCard, StatsCardSkeleton } from './StatsCard';
 import { PositionsTable } from './PositionsTable';
 import { TradesTable } from './TradesTable';
@@ -84,6 +86,24 @@ export default function Dashboard() {
       <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[var(--border)] backdrop-blur-sm bg-opacity-90">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
+            {/* Back Button */}
+            {address && (
+              <button
+                onClick={() => {
+                  setAddress(null);
+                  setFills([]);
+                  setPositions([]);
+                  setStats(null);
+                  setError(null);
+                }}
+                className="p-2 hover:bg-[var(--card)] rounded-lg transition-colors"
+                title="Zurück zur Suche"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+              </button>
+            )}
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -94,7 +114,10 @@ export default function Dashboard() {
               <p className="text-xs text-[var(--muted)]">View-only Wallet Analytics</p>
             </div>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-3">
+            <Donation />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -107,6 +130,7 @@ export default function Dashboard() {
             isLoading={isLoading}
             currentAddress={address}
           />
+          <WalletFavorites onSelect={handleSubmit} currentAddress={address} />
         </div>
 
         {/* Error State */}
@@ -315,8 +339,11 @@ export default function Dashboard() {
       {/* Footer */}
       <footer className="border-t border-[var(--border)] mt-16">
         <div className="max-w-7xl mx-auto px-4 py-6 text-center text-sm text-[var(--muted)]">
-          <p>Hyperliquid Tracker — View-only Analytics. Keine Datenspeicherung.</p>
-          <p className="mt-1">Daten von Hyperliquid API.</p>
+          <p className="mb-1">
+            Developed with ❤️ by <span className="text-[var(--text)] font-medium">Marco Pagani</span>
+          </p>
+          <p className="mb-2">Hyperliquid Tracker — View-only Analytics. Keine Datenspeicherung.</p>
+          <p className="text-xs">Daten von Hyperliquid API.</p>
         </div>
       </footer>
     </div>
