@@ -17,12 +17,46 @@ export function Leaderboard({ onSelectWallet }: LeaderboardProps) {
   const fetchLeaderboard = async () => {
     setIsLoading(true);
     setError(null);
+    
     try {
-      const data = await getHyperliquidLeaderboard(timeframe);
-      setTraders(data);
+      const response = await fetch("/api/hyperliquid", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "leaderboard",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("API error");
+      }
+
+      const rawData = await response.json();
+      
+      // Transform raw API data to our interface
+      const data: HyperliquidLeaderboardEntry[] = rawData.map((entry: any) => ({
+        address: entry.user,
+        totalPnl: entry.totalPnl || 0,
+        dailyPnl: entry.dailyPnl || 0,
+        weeklyPnl: entry.weeklyPnl || 0,
+        monthlyPnl: entry.monthlyPnl || 0,
+        winRate: entry.winRate ? Math.round(entry.winRate * 100) : 0,
+        volume: entry.volume || 0,
+        totalTrades: entry.tradeCount || 0,
+        accountValue: entry.accountValue || 0,
+      }));
+      
+      setTraders(data.sort((a, b) => {
+        const aPnl = timeframe === '24h' ? a.dailyPnl : timeframe === '7d' ? a.weeklyPnl : a.monthlyPnl;
+        const bPnl = timeframe === '24h' ? b.dailyPnl : timeframe === '7d' ? b.weeklyPnl : b.monthlyPnl;
+        return bPnl - aPnl;
+      }));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Fehler beim Laden der Leaderboard-Daten');
-      console.error(err);
+      console.error('Leaderboard Fehler:', err);
+      setError("Konnte Leaderboard-Daten nicht laden.");
+      setTraders([]);
     } finally {
       setIsLoading(false);
     }
@@ -106,6 +140,13 @@ export function Leaderboard({ onSelectWallet }: LeaderboardProps) {
           </div>
         </div>
 
+        {/* Error State */}
+        {error && (
+          <div className="px-4 py-3 bg-red-500/10 border-b border-red-500/20">
+            <p className="text-sm text-red-500">{error}</p>
+          </div>
+        )}
+
         {/* Loading State */}
         {isLoading && (
           <div className="p-8 text-center">
@@ -115,17 +156,6 @@ export function Leaderboard({ onSelectWallet }: LeaderboardProps) {
               </svg>
             </div>
             <p className="text-[var(--muted)]">Lade Leaderboard...</p>
-          </div>
-        )}
-
-        {/* Error State */}
-        {error && !isLoading && (
-          <div className="p-6 text-center">
-            <svg className="w-12 h-12 mx-auto mb-3 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.66 1.762-3L13.732 4c-.74-1.34-2.784-1.34-3.524 0L6.238 20c-.74 1.34 0.222 3 1.762 3z" />
-            </svg>
-            <p className="text-[var(--muted)] mb-4">{error}</p>
-            <p className="text-sm text-[var(--muted)]">Bitte überprüfe deine Internetverbindung oder versuche es später erneut.</p>
           </div>
         )}
 

@@ -37,23 +37,33 @@ export interface HyperliquidWalletStats {
 // Generic request to our proxy API
 export async function fetchHyperliquidProxy<T>(body: any): Promise<T> {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
     const response = await fetch(HYPERLIQUID_API_PROXY, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
+      signal: controller.signal,
     });
 
+    clearTimeout(timeoutId);
+
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `API Error: ${response.status}`);
+      const errorData = await response.json().catch(() => ({ error: `HTTP Error ${response.status}` }));
+      throw new Error(errorData.error || `API Error: ${response.statusText}`);
     }
 
-    return await response.json();
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Failed to fetch Hyperliquid API via proxy:', error);
-    throw error;
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Anfrage abgebrochen durch Timeout – bitte versuche es später erneut');
+    }
+    throw new Error(error instanceof Error ? error.message : 'Netzwerkfehler');
   }
 }
 

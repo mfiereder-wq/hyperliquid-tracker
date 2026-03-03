@@ -1,32 +1,32 @@
 // app/api/hyperliquid/route.ts
-import { NextResponse } from 'next/server';
 
-const HYPERLIQUID_API = 'https://api.hyperliquid.xyz/info';
-
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const body = await request.json();
+    const body = await req.json();
 
-    const response = await fetch(HYPERLIQUID_API, {
-      method: 'POST',
+    const response = await fetch("https://api.hyperliquid.xyz/info", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
+      cache: "no-store",
     });
 
     if (!response.ok) {
-      return NextResponse.json(
-        { error: `Hyperliquid API Error: ${response.statusText}` },
+      const errorText = await response.text();
+      return Response.json(
+        { error: errorText },
         { status: response.status }
       );
     }
 
     const data = await response.json();
-    return NextResponse.json(data);
+    return Response.json(data);
+
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to proxy Hyperliquid API request' },
+    return Response.json(
+      { error: "Failed to fetch Hyperliquid data" },
       { status: 500 }
     );
   }
