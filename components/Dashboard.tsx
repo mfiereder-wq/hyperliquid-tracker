@@ -4,7 +4,6 @@ import { useState, useCallback } from 'react';
 import { WalletInput } from './WalletInput';
 import { WalletFavorites } from './WalletFavorites';
 import { Donation } from './Donation';
-import { Leaderboard } from './Leaderboard';
 import { StatsCard, StatsCardSkeleton } from './StatsCard';
 import { PositionsTable } from './PositionsTable';
 import { TradesTable } from './TradesTable';
@@ -131,9 +130,6 @@ export default function Dashboard() {
             currentAddress={address}
           />
         </div>
-
-        {/* Leaderboard */}
-        <Leaderboard onSelectWallet={handleSubmit} />
 
 
         {/* Error State */}
