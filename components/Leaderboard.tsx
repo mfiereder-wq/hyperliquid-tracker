@@ -20,11 +20,8 @@ export function Leaderboard({ onSelectWallet }: LeaderboardProps) {
     try {
       const data = await getHyperliquidLeaderboard(timeframe);
       setTraders(data);
-      if (data.length === 0) {
-        setError('Keine echten Leaderboard-Daten verfügbar. Nutze die Beispiel-Daten oder füge deine eigene API hinzu.');
-      }
     } catch (err) {
-      setError('Fehler beim Laden der Leaderboard-Daten');
+      setError(err instanceof Error ? err.message : 'Fehler beim Laden der Leaderboard-Daten');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -50,7 +47,7 @@ export function Leaderboard({ onSelectWallet }: LeaderboardProps) {
   };
 
   const formatUSD = (value: number) => {
-    if (!value) return '$0';
+    if (!value && value !== 0) return '$0';
     if (value >= 1000000) return `$${(value / 1000000).toFixed(2)}M`;
     if (value >= 1000) return `$${(value / 1000).toFixed(1)}K`;
     return `$${value.toFixed(0)}`;
@@ -128,7 +125,7 @@ export function Leaderboard({ onSelectWallet }: LeaderboardProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.66 1.762-3L13.732 4c-.74-1.34-2.784-1.34-3.524 0L6.238 20c-.74 1.34 0.222 3 1.762 3z" />
             </svg>
             <p className="text-[var(--muted)] mb-4">{error}</p>
-            <p className="text-sm text-[var(--muted)]">Du kannst die offizielle Hyperliquid API nutzen oder eine Drittanbieter-API wie Dune Analytics hinzufügen.</p>
+            <p className="text-sm text-[var(--muted)]">Bitte überprüfe deine Internetverbindung oder versuche es später erneut.</p>
           </div>
         )}
 

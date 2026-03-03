@@ -1,6 +1,6 @@
-// Hyperliquid Official API Client
+// Hyperliquid Official API Client mit Proxy
 
-const HYPERLIQUID_API = 'https://api.hyperliquid.xyz/info';
+export const HYPERLIQUID_API_PROXY = '/api/hyperliquid';
 
 export interface HyperliquidLeaderboardEntry {
   address: string;
@@ -12,72 +12,90 @@ export interface HyperliquidLeaderboardEntry {
   volume: number;
   totalTrades: number;
   accountValue: number;
+  userName?: string;
 }
 
-// Get leaderboard data from Hyperliquid API
-// Note: Hyperliquid doesn't have a public leaderboard endpoint yet, this is a placeholder
-// For real data you would need to use a third-party aggregator or track wallets yourself
-export async function getHyperliquidLeaderboard(timeframe: '24h' | '7d' | '30d'): Promise<HyperliquidLeaderboardEntry[]> {
+export interface HyperliquidWalletStats {
+  user: string;
+  crossMarginLeverage: number;
+  marginSummary: {
+    totalWalletBalance: number;
+    availableBalance: number;
+    positionMargin: number;
+    orderMargin: number;
+  };
+  assetPositions: any[];
+  pnl: {
+    total: number;
+    daily: number;
+    weekly: number;
+    monthly: number;
+  };
+  tradeCount: number;
+}
+
+// Generic request to our proxy API
+export async function fetchHyperliquidProxy<T>(body: any): Promise<T> {
   try {
-    // This is a placeholder - Hyperliquid does not currently expose a public leaderboard API
-    // In production you would need to:
-    // 1. Use a third-party service like DefiLlama, Dune Analytics
-    // 2. Track top traders yourself by scanning blockchain transactions
-    // 3. Use a paid API service
-    
-    const response = await fetch(`${HYPERLIQUID_API}/leaderboard`, {
+    const response = await fetch(HYPERLIQUID_API_PROXY, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        timeframe: timeframe,
-      }),
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch leaderboard data');
-    }
-
-    const data = await response.json();
-    return data.map((entry: any) => ({
-      address: entry.address,
-      totalPnl: entry.totalPnl,
-      dailyPnl: entry.dailyPnl,
-      weeklyPnl: entry.weeklyPnl,
-      monthlyPnl: entry.monthlyPnl,
-      winRate: entry.winRate,
-      volume: entry.volume,
-      totalTrades: entry.totalTrades,
-      accountValue: entry.accountValue,
-    }));
-  } catch (error) {
-    console.error('Error fetching Hyperliquid leaderboard:', error);
-    // Return empty array as fallback
-    return [];
-  }
-}
-
-// Get wallet stats for a specific address
-export async function getWalletStats(address: string) {
-  try {
-    const response = await fetch(`${HYPERLIQUID_API}/userState`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user: address,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch wallet stats');
+      const errorData = await response.json();
+      throw new Error(errorData.error || `API Error: ${response.status}`);
     }
 
     return await response.json();
   } catch (error) {
-    console.error('Error fetching wallet stats:', error);
-    return null;
+    console.error('Failed to fetch Hyperliquid API via proxy:', error);
+    throw error;
+  }
+}
+
+// Get wallet stats for a specific address
+export async function getWalletStats(address: string): Promise<HyperliquidWalletStats> {
+  return fetchHyperliquidProxy<HyperliquidWalletStats>({
+    type: 'clearinghouseState',
+    user: address,
+  });
+}
+
+// Get user fills/trade history
+export async function getUserFills(address: string): Promise<any[]> {
+  return fetchHyperliquidProxy<any[]>({
+    type: 'userFills',
+    user: address,
+  });
+}
+
+// Get leaderboard data from Hyperliquid API
+export async function getHyperliquidLeaderboard(timeframe: '24h' | '7d' | '30d'): Promise<HyperliquidLeaderboardEntry[]> {
+  try {
+    // First get official leaderboard data
+    const leaderboardData = await fetchHyperliquidProxy<any[]>({
+      type: 'leaderboard',
+    });
+
+    // Transform and enrich the data
+    return leaderboardData.map((entry: any, index: number) => ({
+      address: entry.user,
+      totalPnl: entry.totalPnl || 0,
+      dailyPnl: entry.dailyPnl || 0,
+      weeklyPnl: entry.weeklyPnl || 0,
+      monthlyPnl: entry.monthlyPnl || 0,
+      winRate: entry.winRate ? Math.round(entry.winRate * 100) : 0,
+      volume: entry.volume || 0,
+      totalTrades: entry.tradeCount || 0,
+      accountValue: entry.accountValue || 0,
+      userName: entry.userName,
+    }));
+  } catch (error) {
+    console.error('Error fetching leaderboard:', error);
+    throw new Error('Konnte Leaderboard-Daten nicht laden');
   }
 }

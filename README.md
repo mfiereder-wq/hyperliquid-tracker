@@ -1,146 +1,66 @@
-# Hyperliquid Wallet Tracker
+# Hyperliquid Tracker Anleitung
 
-Eine produktionsreife Webanwendung zum Anzeigen von Trading-Aktivitäten auf Hyperliquid über eine Wallet-Adresse.
+## 🚀 Fertige Features
+✅ Dauerhaft gespeicherte Wallet-Favoriten
+✅ Deutlicher Spenden-Button mit Modal für BNB/ETH/MATIC
+✅ 🏆 Top-Trader Leaderboard mit 24h/7d/30d Filter
+✅ Mobile-optimierte Ansicht für Smartphones
+✅ Zurück-Button zur Suche
+✅ CSV-Export aller Trades
+✅ Dunkel/Helm Modus
+✅ Responsive Design für alle Geräte
+✅ Echte Live-Daten über offizielle Hyperliquid Public API
 
-## Features
+## 📊 Echte Live-Daten
 
-### Kernfunktionen
-- **Wallet-Eingabe**: Echtzeit-Validierung der Ethereum-Adresse
-- **Trading-History**: Alle Trades mit Zeitstempel, Market, Seite, Preis, Größe, Fee, PnL
-- **Offene Positionen**: Entry Price, Size, Leverage, Liquidation Price, Unrealized PnL
-- **CSV Export**: Alle Trades als CSV herunterladen
+Die App nutzt ausschließlich die **offizielle Hyperliquid Public API** über einen sicheren Proxy-Server:
 
-### Performance-Metriken
-- Account Value
-- Gesamt PnL
-- Win Rate (W/L)
-- Total Trades
-- Total Volumen
-- Profit Factor
-- Bester/Schlechtester Trade
-- Durchschnittlicher Gewinn/Verlust
-- Gesamtgebühren
+### Funktionsweise:
+1. Unser Proxy-Server leitet alle Anfragen an `https://api.hyperliquid.xyz/info` weiter
+2. Keine API-Keys erforderlich
+3. Nur sichere POST-Anfragen mit JSON-Body
+4. Keine sensitiven Daten gespeichert
 
-### Charts (TradingView lightweight-charts)
-- **Equity Curve**: Kumulativer PnL-Verlauf
-- **PnL pro Trade**: Histogram mit Grün/Rot
-- **Tägliches Volumen**: Netto-Volumen pro Tag
+### Verfügbare Endpunkte:
+- `POST /api/hyperliquid` - Allgemeine API-Anfrage an Hyperliquid
+- Leaderboard-Daten: `{"type": "leaderboard"}`
+- Wallet-Daten: `{"type": "clearinghouseState", "user": "0xWALLET"}`
+- Handelshistorie: `{"type": "userFills", "user": "0xWALLET"}`
 
-### Analytik
-- **Long vs Short Statistik**: Trades, PnL, Win Rate pro Seite
-- **PnL nach Tag**: Balkendiagramm der letzten 14 Tage
-- **Wochenübersicht**: Aggregierte Wochenperformance
-
-### UX
-- **Dark/Light Mode**: Mit System-Auto-Erkennung
-- **Skeleton Loader**: Keine leeren Bildschirme
-- **Fehlermeldungen**: In normaler Sprache
-- **Mobile First**: Responsive für alle Geräte
-- **Sofortige Validierung**: Grün/Rot-Feedback bei Adresseingabe
-
-## Installation
+## 🛠️ Lokale Entwicklung
 
 ```bash
-# In das Projektverzeichnis wechseln
-cd hyperliquid-tracker
-
-# Dependencies installieren
+# Installiere Abhängigkeiten
 npm install
 
-# Entwicklungsserver starten
+# Starte Entwicklungs-Server
 npm run dev
-```
 
-Die Anwendung ist dann unter `http://localhost:3000` erreichbar.
-
-## Produktions-Build
-
-```bash
-# Build erstellen
+# Baue Produktions-Version
 npm run build
 
-# Produktions-Server starten
+# Starte Produktions-Server
 npm start
 ```
 
-## Architektur
+## 🚀 Deployment
 
-```
-hyperliquid-tracker/
-├── app/                    # Next.js App Router
-│   ├── layout.tsx         # Root Layout mit Theme Provider
-│   ├── page.tsx           # Hauptseite
-│   └── globals.css        # Tailwind + Custom Styles
-├── components/            # React Komponenten
-│   ├── Dashboard.tsx      # Haupt-Dashboard
-│   ├── WalletInput.tsx    # Adressen-Eingabe mit Validierung
-│   ├── StatsCard.tsx      # Statistik-Karten
-│   ├── PositionsTable.tsx # Positionen-Tabelle
-│   ├── TradesTable.tsx    # Trades-Tabelle mit CSV Export
-│   ├── PnLChart.tsx       # Equity Curve Chart
-│   ├── VolumeChart.tsx    # Volumen Chart
-│   ├── LongShortStats.tsx # Long vs Short Analyse
-│   ├── DailyPnL.tsx       # Tägliche PnL Übersicht
-│   ├── ThemeProvider.tsx  # Theme Toggle
-│   └── LoadingSpinner.tsx # Loading Komponenten
-├── lib/api.ts             # Hyperliquid API Client mit Retry-Logik
-├── types/index.ts         # TypeScript Types
-└── context/ThemeContext.tsx # Theme State
+Die App ist bereits für Vercel konfiguriert. Pushe einfach deine Änderungen an GitHub:
+
+```bash
+git add .
+git commit -m "Deine Änderungen"
+git push
 ```
 
-### Technologie-Stack
+Vercel deployed die App automatisch in ~1 Minute.
 
-| Technologie | Verwendung |
-|-------------|------------|
-| Next.js 14 | Framework (App Router) |
-| React 18 | UI Komponenten |
-| TypeScript | Typsicherheit |
-| Tailwind CSS | Styling |
-| lightweight-charts | Trading Charts (TradingView) |
+## 📝 Wichtige Hinweise
+- Hyperliquid benötigt **keine API-Keys** für öffentliche Endpunkte
+- Alle Anfragen müssen als POST mit `Content-Type: application/json` gesendet werden
+- Die App zeigt nur echte Live-Daten von Hyperliquid
+- Bei Fehlern wird eine klare Fehlermeldung angezeigt
 
-### API-Endpunkte
+---
 
-| Endpoint | Beschreibung |
-|----------|--------------|
-| `userFills` | Trade-History mit PnL |
-| `clearinghouseState` | Positionen + Account Value |
-
-### Features im Detail
-
-#### Rate Limiting & Retry
-- 100ms zwischen API-Requests
-- 3 Retries mit exponentiellem Backoff
-- Benutzerfreundliche Fehlermeldungen
-
-#### Datenstruktur
-Jeder Trade enthält:
-- Zeitstempel
-- Market/Pair (z.B. ETH-PERP)
-- Seite (Long/Short)
-- Größe
-- Entry/Exit Preis
-- Realized PnL
-- Fees
-- Status (offen/geschlossen)
-
-#### CSV Export
-- Alle Trades exportierbar
-- Format: Zeitstempel, Market, Seite, Preis, Größe, Wert, Fee, PnL, TX Hash
-
-## Beispiel-Wallet zum Testen
-
-```
-0x2259e3D7F14D85B140B1a7AA7D713a7B7A2a2c5F
-```
-
-## Sicherheit
-
-- **Keine Authentifizierung**: View-only Zugriff
-- **Keine Datenspeicherung**: Alle Daten sind temporär
-- **Client-seitig**: API-Calls direkt vom Browser
-- **Read-Only**: Nur Lesezugriff auf öffentliche Daten
-- **Wallet-Adresse**: Wird nur im Request verwendet, nie gespeichert
-
-## Lizenz
-
-MIT
+*Entwickelt mit ❤️ von Marco Pagani*
