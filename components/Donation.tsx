@@ -46,10 +46,10 @@ export function Donation() {
       {/* Support Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 px-3 py-1.5 text-sm text-[var(--muted)] hover:text-[var(--text)] border border-[var(--border)] rounded-lg hover:border-[var(--accent)] transition-all"
+        className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-all shadow-md hover:shadow-lg"
       >
         <span>☕</span>
-        <span className="hidden sm:inline">Unterstützen</span>
+        <span>Entwicklung unterstützen</span>
       </button>
 
       {/* Modal */}

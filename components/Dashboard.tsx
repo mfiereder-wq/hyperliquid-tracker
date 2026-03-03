@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { WalletInput } from './WalletInput';
 import { WalletFavorites } from './WalletFavorites';
 import { Donation } from './Donation';
+import { Leaderboard } from './Leaderboard';
 import { StatsCard, StatsCardSkeleton } from './StatsCard';
 import { PositionsTable } from './PositionsTable';
 import { TradesTable } from './TradesTable';
@@ -129,8 +130,11 @@ export default function Dashboard() {
             isLoading={isLoading}
             currentAddress={address}
           />
-          <WalletFavorites onSelect={handleSubmit} currentAddress={address} />
         </div>
+
+        {/* Leaderboard */}
+        <Leaderboard onSelectWallet={handleSubmit} />
+
 
         {/* Error State */}
         {error && (
@@ -338,6 +342,12 @@ export default function Dashboard() {
       {/* Footer */}
       <footer className="border-t border-[var(--border)] mt-16">
         <div className="max-w-7xl mx-auto px-4 py-6">
+          {/* Favorites Section */}
+          {address && (
+            <div className="mb-6 pb-6 border-b border-[var(--border)]">
+              <WalletFavorites onSelect={handleSubmit} currentAddress={address} />
+            </div>
+          )}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-center sm:text-left text-sm text-[var(--muted)]">
               <p className="mb-1">
