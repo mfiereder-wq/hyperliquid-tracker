@@ -114,8 +114,7 @@ export default function Dashboard() {
               <p className="text-xs text-[var(--muted)]">View-only Wallet Analytics</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Donation />
+          <div className="flex items-center gap-2">
             <ThemeToggle />
           </div>
         </div>
@@ -338,12 +337,18 @@ export default function Dashboard() {
 
       {/* Footer */}
       <footer className="border-t border-[var(--border)] mt-16">
-        <div className="max-w-7xl mx-auto px-4 py-6 text-center text-sm text-[var(--muted)]">
-          <p className="mb-1">
-            Developed with ❤️ by <span className="text-[var(--text)] font-medium">Marco Pagani</span>
-          </p>
-          <p className="mb-2">Hyperliquid Tracker — View-only Analytics. Keine Datenspeicherung.</p>
-          <p className="text-xs">Daten von Hyperliquid API.</p>
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-center sm:text-left text-sm text-[var(--muted)]">
+              <p className="mb-1">
+                Developed with ❤️ by <span className="text-[var(--text)] font-medium">Marco Pagani</span>
+              </p>
+              <p className="text-xs">Hyperliquid Tracker — View-only Analytics. Keine Datenspeicherung.</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Donation />
+            </div>
+          </div>
         </div>
       </footer>
     </div>

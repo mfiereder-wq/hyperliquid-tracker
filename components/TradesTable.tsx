@@ -77,12 +77,14 @@ export function TradesTable({ fills, isLoading, walletAddress }: TradesTableProp
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
-            CSV Export
+            CSV
           </button>
           <span className="text-sm text-[var(--muted)]">{fills.length} Trades</span>
         </div>
       </div>
-      <div className="overflow-x-auto">
+
+      {/* Desktop Table View */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="trade-table">
           <thead>
             <tr>
@@ -129,6 +131,66 @@ export function TradesTable({ fills, isLoading, walletAddress }: TradesTableProp
           </tbody>
         </table>
       </div>
+
+      {/* Mobile Card View */}
+      <div className="md:hidden divide-y divide-[var(--border)]">
+        {filteredFills.map((fill, idx) => {
+          const isBuy = fill.side === 'B';
+          const price = parseFloat(fill.px);
+          const size = parseFloat(fill.sz);
+          const value = price * size;
+          const fee = parseFloat(fill.fee);
+          const closedPnl = fill.closedPnl ? parseFloat(fill.closedPnl) : null;
+
+          return (
+            <div key={fill.oid + '-' + idx} className="p-3 animate-fade-in" style={{ animationDelay: `${idx * 15}ms` }}>
+              {/* Header Row */}
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">{fill.coin}</span>
+                  <span className={`badge ${isBuy ? 'badge-long' : 'badge-short'}`}>
+                    {isBuy ? 'BUY' : 'SELL'}
+                  </span>
+                </div>
+                <span className="text-xs text-[var(--muted)]" title={formatTimestampFull(fill.time)}>
+                  {formatTimestamp(fill.time)}
+                </span>
+              </div>
+              
+              {/* Details Grid */}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-[var(--muted)]">Preis</span>
+                  <span className="font-mono">${formatNumber(price, 4)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--muted)]">Größe</span>
+                  <span className="font-mono">{formatNumber(size, 4)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--muted)]">Wert</span>
+                  <span className="font-mono">{formatUSD(value)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--muted)]">Fee</span>
+                  <span className="font-mono text-[var(--muted)]">{formatUSD(fee, 4)}</span>
+                </div>
+              </div>
+
+              {/* PnL Row */}
+              {closedPnl !== null && (
+                <div className="flex justify-between items-center mt-2 pt-2 border-t border-[var(--border)]">
+                  <span className="text-[var(--muted)] text-sm">Closed PnL</span>
+                  <span className={`font-mono font-semibold ${closedPnl >= 0 ? 'profit' : 'loss'}`}>
+                    {formatUSD(closedPnl)}
+                  </span>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
       {fills.length > 20 && (
         <div className="p-4 border-t border-[var(--border)] text-center">
           <button
