@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from "@/context/ThemeContext";
 
 export function ThemeToggle() {
   // Wir verwenden nur das dunkle Theme, daher kein Toggle nötig

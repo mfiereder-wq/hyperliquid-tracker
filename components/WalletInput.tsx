@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { isValidAddress, formatAddress } from '@/lib/api';
+import { useState, useEffect } from "react";
+import { isValidAddress, formatAddress } from "@/lib/api";
 
 interface WalletInputProps {
   onSubmit: (address: string) => void;
@@ -9,8 +9,12 @@ interface WalletInputProps {
   currentAddress: string | null;
 }
 
-export function WalletInput({ onSubmit, isLoading, currentAddress }: WalletInputProps) {
-  const [input, setInput] = useState('');
+export function WalletInput({
+  onSubmit,
+  isLoading,
+  currentAddress,
+}: WalletInputProps) {
+  const [input, setInput] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isValid, setIsValid] = useState<boolean | null>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -26,7 +30,7 @@ export function WalletInput({ onSubmit, isLoading, currentAddress }: WalletInput
       setError(null);
     } else {
       setIsValid(false);
-      setError('Ungültiges Ethereum-Adressformat (muss mit 0x beginnen)');
+      setError("Ungültiges Ethereum-Adressformat (muss mit 0x beginnen)");
     }
   }, [input]);
 
@@ -42,22 +46,22 @@ export function WalletInput({ onSubmit, isLoading, currentAddress }: WalletInput
     e.preventDefault();
     setError(null);
     const trimmed = input.trim();
-    
+
     if (!trimmed) {
-      setError('Bitte gib eine Wallet-Adresse ein');
+      setError("Bitte gib eine Wallet-Adresse ein");
       return;
     }
-    
+
     if (!isValidAddress(trimmed)) {
-      setError('Ungültige Wallet-Adresse. Bitte überprüfe die Eingabe.');
+      setError("Ungültige Wallet-Adresse. Bitte überprüfe die Eingabe.");
       return;
     }
-    
+
     onSubmit(trimmed);
   };
 
   const clearInput = () => {
-    setInput('');
+    setInput("");
     setIsValid(null);
     setError(null);
   };
@@ -65,36 +69,39 @@ export function WalletInput({ onSubmit, isLoading, currentAddress }: WalletInput
   return (
     <div className="w-full">
       <form onSubmit={handleSubmit} className="relative">
-        <div 
+        <div
           className={`
             relative flex items-center gap-3 p-2 bg-bg-elevated border-2 rounded-2xl transition-all duration-300
-            ${isFocused 
-              ? isValid === true 
-                ? 'border-accent shadow-glow' 
-                : isValid === false 
-                  ? 'border-loss shadow-[0_0_20px_rgba(239,68,68,0.2)]' 
-                  : 'border-accent/50'
-              : 'border-border hover:border-border-accent'
+            ${
+              isFocused
+                ? isValid === true
+                  ? "border-accent shadow-glow"
+                  : isValid === false
+                    ? "border-loss shadow-[0_0_20px_rgba(239,68,68,0.2)]"
+                    : "border-accent/50"
+                : "border-border hover:border-border-accent"
             }
           `}
         >
           {/* Search Icon */}
           <div className="flex-shrink-0 pl-3">
-            <div className={`
+            <div
+              className={`
               w-10 h-10 rounded-xl flex items-center justify-center transition-colors
-              ${isFocused ? 'bg-accent/10' : 'bg-bg-card'}
-            `}>
-              <svg 
-                className={`w-5 h-5 transition-colors ${isFocused ? 'text-accent' : 'text-text-muted'}`} 
-                fill="none" 
-                viewBox="0 0 24 24" 
+              ${isFocused ? "bg-accent/10" : "bg-bg-card"}
+            `}
+            >
+              <svg
+                className={`w-5 h-5 transition-colors ${isFocused ? "text-accent" : "text-text-muted"}`}
+                fill="none"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
             </div>
@@ -123,22 +130,54 @@ export function WalletInput({ onSubmit, isLoading, currentAddress }: WalletInput
                 onClick={clearInput}
                 className="p-2 text-text-muted hover:text-text hover:bg-bg-card rounded-lg transition-colors"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             )}
 
             {/* Validation Indicator */}
             {isValid !== null && !isLoading && (
-              <div className={`flex-shrink-0 ${isValid ? 'text-profit' : 'text-loss'}`}>
+              <div
+                className={`flex-shrink-0 ${isValid ? "text-profit" : "text-loss"}`}
+              >
                 {isValid ? (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                 ) : (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 )}
               </div>
@@ -150,17 +189,33 @@ export function WalletInput({ onSubmit, isLoading, currentAddress }: WalletInput
               disabled={isLoading || !isValid}
               className={`
                 flex-shrink-0 px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200
-                ${isLoading || !isValid
-                  ? 'bg-bg-card text-text-muted cursor-not-allowed'
-                  : 'bg-accent text-bg hover:bg-accent/90 shadow-glow hover:shadow-[0_0_30px_rgba(0,212,255,0.5)]'
+                ${
+                  isLoading || !isValid
+                    ? "bg-bg-card text-text-muted cursor-not-allowed"
+                    : "bg-accent text-bg hover:bg-accent/90 shadow-glow hover:shadow-[0_0_30px_rgba(0,212,255,0.5)]"
                 }
               `}
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">
-                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  <svg
+                    className="animate-spin w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
                   </svg>
                   <span>Laden...</span>
                 </div>
@@ -174,8 +229,18 @@ export function WalletInput({ onSubmit, isLoading, currentAddress }: WalletInput
         {/* Error Message */}
         {error && (
           <div className="absolute -bottom-8 left-0 flex items-center gap-2 text-sm text-loss">
-            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-4 h-4 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <span>{error}</span>
           </div>
@@ -184,8 +249,18 @@ export function WalletInput({ onSubmit, isLoading, currentAddress }: WalletInput
         {/* Helper Text */}
         {!error && (
           <div className="absolute -bottom-8 left-0 flex items-center gap-2 text-xs text-text-muted">
-            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="w-4 h-4 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             <span>Gib eine gültige Ethereum-Adresse ein</span>
           </div>

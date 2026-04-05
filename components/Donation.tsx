@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-const DONATION_ADDRESS = '0x8532214951d64B11Be341922CB134b46F2D41293';
+const DONATION_ADDRESS = "0x8532214951d64B11Be341922CB134b46F2D41293";
 
 export function Donation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,30 +14,30 @@ export function Donation() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
     }
   };
 
   // Close on Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === "Escape" && isOpen) {
         setIsOpen(false);
       }
     };
-    window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
   }, [isOpen]);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -51,13 +51,18 @@ export function Donation() {
         >
           <span className="text-lg">☕</span>
           <span>Entwicklung unterstützen</span>
-          <svg 
-            className="w-4 h-4 group-hover:translate-x-1 transition-transform" 
-            fill="none" 
-            viewBox="0 0 24 24" 
+          <svg
+            className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+            fill="none"
+            viewBox="0 0 24 24"
             stroke="currentColor"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 8l4 4m0 0l-4 4m4-4H3"
+            />
           </svg>
         </button>
       </div>
@@ -79,8 +84,12 @@ export function Donation() {
                   <span className="text-xl">☕</span>
                 </div>
                 <div>
-                  <h3 className="font-display text-lg font-bold text-text">Unterstützung</h3>
-                  <p className="text-xs text-text-muted">Jede Spende hilft weiter</p>
+                  <h3 className="font-display text-lg font-bold text-text">
+                    Unterstützung
+                  </h3>
+                  <p className="text-xs text-text-muted">
+                    Jede Spende hilft weiter
+                  </p>
                 </div>
               </div>
               <button
@@ -88,32 +97,58 @@ export function Donation() {
                 className="p-2 hover:bg-bg-elevated rounded-lg transition-colors"
                 aria-label="Schließen"
               >
-                <svg className="w-5 h-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-5 h-5 text-text-muted"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
 
             <p className="text-text-secondary text-sm mb-6">
-              Diese App wird mit ❤️ entwickelt. Unterstütze die Weiterentwicklung mit einer kleinen Spende auf verschiedenen Chains!
+              Diese App wird mit ❤️ entwickelt. Unterstütze die
+              Weiterentwicklung mit einer kleinen Spende auf verschiedenen
+              Chains!
             </p>
 
             {/* Crypto Networks */}
             <div className="space-y-2 mb-6">
               {[
-                { symbol: 'B', name: 'BNB', chain: 'BSC', color: 'bg-warning' },
-                { symbol: 'E', name: 'ETH', chain: 'Ethereum', color: 'bg-accent' },
-                { symbol: 'P', name: 'MATIC', chain: 'Polygon', color: 'bg-premium' },
+                { symbol: "B", name: "BNB", chain: "BSC", color: "bg-warning" },
+                {
+                  symbol: "E",
+                  name: "ETH",
+                  chain: "Ethereum",
+                  color: "bg-accent",
+                },
+                {
+                  symbol: "P",
+                  name: "MATIC",
+                  chain: "Polygon",
+                  color: "bg-premium",
+                },
               ].map((net) => (
                 <div
                   key={net.symbol}
                   className="flex items-center gap-3 p-3 bg-bg-elevated rounded-xl border border-border"
                 >
-                  <div className={`w-9 h-9 rounded-lg ${net.color} flex items-center justify-center text-sm font-bold text-bg`}>
+                  <div
+                    className={`w-9 h-9 rounded-lg ${net.color} flex items-center justify-center text-sm font-bold text-bg`}
+                  >
                     {net.symbol}
                   </div>
                   <div>
-                    <div className="font-semibold text-sm text-text">{net.name}</div>
+                    <div className="font-semibold text-sm text-text">
+                      {net.name}
+                    </div>
                     <div className="text-xs text-text-muted">{net.chain}</div>
                   </div>
                 </div>
@@ -136,17 +171,37 @@ export function Donation() {
                   onClick={copyAddress}
                   className={`px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-200 ${
                     copied
-                      ? 'bg-profit text-bg'
-                      : 'bg-accent text-bg hover:opacity-90'
+                      ? "bg-profit text-bg"
+                      : "bg-accent text-bg hover:opacity-90"
                   }`}
                 >
                   {copied ? (
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                   ) : (
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
                     </svg>
                   )}
                 </button>
@@ -155,7 +210,9 @@ export function Donation() {
 
             {/* QR Code */}
             <div className="text-center p-4 bg-bg-elevated rounded-xl border border-border">
-              <div className="text-xs text-text-muted uppercase tracking-wider mb-3">QR-Code scannen</div>
+              <div className="text-xs text-text-muted uppercase tracking-wider mb-3">
+                QR-Code scannen
+              </div>
               <div className="inline-block p-3 bg-white rounded-xl">
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${DONATION_ADDRESS}`}

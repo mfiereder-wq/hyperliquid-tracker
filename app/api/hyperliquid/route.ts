@@ -15,19 +15,15 @@ export async function POST(req: Request) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      return Response.json(
-        { error: errorText },
-        { status: response.status }
-      );
+      return Response.json({ error: errorText }, { status: response.status });
     }
 
     const data = await response.json();
     return Response.json(data);
-
   } catch (error) {
     return Response.json(
       { error: "Failed to fetch Hyperliquid data" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,6 +1,6 @@
 // Hyperliquid Official API Client mit Proxy
 
-export const HYPERLIQUID_API_PROXY = '/api/hyperliquid';
+export const HYPERLIQUID_API_PROXY = "/api/hyperliquid";
 
 export interface HyperliquidLeaderboardEntry {
   address: string;
@@ -41,9 +41,9 @@ export async function fetchHyperliquidProxy<T>(body: any): Promise<T> {
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
     const response = await fetch(HYPERLIQUID_API_PROXY, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
       signal: controller.signal,
@@ -52,25 +52,31 @@ export async function fetchHyperliquidProxy<T>(body: any): Promise<T> {
     clearTimeout(timeoutId);
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: `HTTP Error ${response.status}` }));
+      const errorData = await response
+        .json()
+        .catch(() => ({ error: `HTTP Error ${response.status}` }));
       throw new Error(errorData.error || `API Error: ${response.statusText}`);
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Failed to fetch Hyperliquid API via proxy:', error);
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error('Anfrage abgebrochen durch Timeout – bitte versuche es später erneut');
+    console.error("Failed to fetch Hyperliquid API via proxy:", error);
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error(
+        "Anfrage abgebrochen durch Timeout – bitte versuche es später erneut",
+      );
     }
-    throw new Error(error instanceof Error ? error.message : 'Netzwerkfehler');
+    throw new Error(error instanceof Error ? error.message : "Netzwerkfehler");
   }
 }
 
 // Get wallet stats for a specific address
-export async function getWalletStats(address: string): Promise<HyperliquidWalletStats> {
+export async function getWalletStats(
+  address: string,
+): Promise<HyperliquidWalletStats> {
   return fetchHyperliquidProxy<HyperliquidWalletStats>({
-    type: 'clearinghouseState',
+    type: "clearinghouseState",
     user: address,
   });
 }
@@ -78,17 +84,19 @@ export async function getWalletStats(address: string): Promise<HyperliquidWallet
 // Get user fills/trade history
 export async function getUserFills(address: string): Promise<any[]> {
   return fetchHyperliquidProxy<any[]>({
-    type: 'userFills',
+    type: "userFills",
     user: address,
   });
 }
 
 // Get leaderboard data from Hyperliquid API
-export async function getHyperliquidLeaderboard(timeframe: '24h' | '7d' | '30d'): Promise<HyperliquidLeaderboardEntry[]> {
+export async function getHyperliquidLeaderboard(
+  timeframe: "24h" | "7d" | "30d",
+): Promise<HyperliquidLeaderboardEntry[]> {
   try {
     // First get official leaderboard data
     const leaderboardData = await fetchHyperliquidProxy<any[]>({
-      type: 'leaderboard',
+      type: "leaderboard",
     });
 
     // Transform and enrich the data
@@ -105,7 +113,7 @@ export async function getHyperliquidLeaderboard(timeframe: '24h' | '7d' | '30d')
       userName: entry.userName,
     }));
   } catch (error) {
-    console.error('Error fetching leaderboard:', error);
-    throw new Error('Konnte Leaderboard-Daten nicht laden');
+    console.error("Error fetching leaderboard:", error);
+    throw new Error("Konnte Leaderboard-Daten nicht laden");
   }
 }

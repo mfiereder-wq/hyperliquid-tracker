@@ -1,202 +1,217 @@
-'use client'; 
+"use client";
 
-import { useEffect, useRef, useState } from 'react'; 
-import { createChart, ColorType, IChartApi, LineData, HistogramData } from 'lightweight-charts'; 
-import { Fill } from '@/types'; 
+import { useEffect, useRef, useState } from "react";
+import {
+  createChart,
+  ColorType,
+  IChartApi,
+  LineData,
+  HistogramData,
+} from "lightweight-charts";
+import { Fill } from "@/types";
 
-interface PnLChartProps { 
-  fills: Fill[]; 
+interface PnLChartProps {
+  fills: Fill[];
   isLoading?: boolean;
   showCumulative?: boolean;
 }
 
-export function PnLChart({ fills, isLoading, showCumulative = true }: PnLChartProps) { 
-  const chartContainerRef = useRef<HTMLDivElement>(null); 
-  const chartRef = useRef<IChartApi | null>(null); 
-  const [chartType, setChartType] = useState<'cumulative' | 'histogram'>(showCumulative ? 'cumulative' : 'histogram'); 
+export function PnLChart({
+  fills,
+  isLoading,
+  showCumulative = true,
+}: PnLChartProps) {
+  const chartContainerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<IChartApi | null>(null);
+  const [chartType, setChartType] = useState<"cumulative" | "histogram">(
+    showCumulative ? "cumulative" : "histogram",
+  );
 
-  useEffect(() => { 
-    if (!chartContainerRef.current || isLoading || !fills || fills.length === 0) return; 
+  useEffect(() => {
+    if (!chartContainerRef.current || isLoading || !fills || fills.length === 0)
+      return;
 
-    const chart = createChart(chartContainerRef.current, { 
-      layout: { 
-        background: { type: ColorType.Solid, color: 'transparent' }, 
-        textColor: '#94a3b8', 
-      }, 
-      grid: { 
-        vertLines: { color: '#2a2d38' }, 
-        horzLines: { color: '#2a2d38' }, 
-      }, 
-      width: chartContainerRef.current.clientWidth, 
-      height: 320, 
-      rightPriceScale: { 
-        borderColor: '#2a2d38', 
-      }, 
-      timeScale: { 
-        borderColor: '#2a2d38', 
-        timeVisible: true, 
-        secondsVisible: false, 
-      }, 
-      crosshair: { 
-        mode: 1, 
-        vertLine: { 
-          color: '#00d4ff', 
-          width: 1, 
-          style: 2, 
-        }, 
-        horzLine: { 
-          color: '#00d4ff', 
-          width: 1, 
-          style: 2, 
-        }, 
-      }, 
-    }); 
+    const chart = createChart(chartContainerRef.current, {
+      layout: {
+        background: { type: ColorType.Solid, color: "transparent" },
+        textColor: "#94a3b8",
+      },
+      grid: {
+        vertLines: { color: "#2a2d38" },
+        horzLines: { color: "#2a2d38" },
+      },
+      width: chartContainerRef.current.clientWidth,
+      height: 320,
+      rightPriceScale: {
+        borderColor: "#2a2d38",
+      },
+      timeScale: {
+        borderColor: "#2a2d38",
+        timeVisible: true,
+        secondsVisible: false,
+      },
+      crosshair: {
+        mode: 1,
+        vertLine: {
+          color: "#00d4ff",
+          width: 1,
+          style: 2,
+        },
+        horzLine: {
+          color: "#00d4ff",
+          width: 1,
+          style: 2,
+        },
+      },
+    });
 
-    chartRef.current = chart; 
+    chartRef.current = chart;
 
-    // Sort fills by time 
-    const sortedFills = [...fills].sort((a, b) => a.time - b.time); 
+    // Sort fills by time
+    const sortedFills = [...fills].sort((a, b) => a.time - b.time);
 
-    if (chartType === 'cumulative') { 
-      // Cumulative PnL line chart (Equity Curve) 
-      let cumulativePnl = 0; 
-      const dataMap = new Map<number, number>(); 
+    if (chartType === "cumulative") {
+      // Cumulative PnL line chart (Equity Curve)
+      let cumulativePnl = 0;
+      const dataMap = new Map<number, number>();
 
-      sortedFills 
-        .filter(f => f.closedPnl !== undefined) 
-        .forEach(f => { 
-          const time = Math.floor(f.time / 1000); 
-          cumulativePnl += parseFloat(f.closedPnl || '0'); 
-          // Keep the last value for each timestamp 
-          dataMap.set(time, cumulativePnl); 
-        }); 
+      sortedFills
+        .filter((f) => f.closedPnl !== undefined)
+        .forEach((f) => {
+          const time = Math.floor(f.time / 1000);
+          cumulativePnl += parseFloat(f.closedPnl || "0");
+          // Keep the last value for each timestamp
+          dataMap.set(time, cumulativePnl);
+        });
 
-      // Convert to array and sort by time (ascending) 
-      const cumulativeData: LineData[] = Array.from(dataMap.entries()) 
-        .sort((a, b) => a[0] - b[0]) 
-        .map(([time, value]) => ({ 
-          time: time as any, 
-          value, 
-        })); 
+      // Convert to array and sort by time (ascending)
+      const cumulativeData: LineData[] = Array.from(dataMap.entries())
+        .sort((a, b) => a[0] - b[0])
+        .map(([time, value]) => ({
+          time: time as any,
+          value,
+        }));
 
-      if (cumulativeData.length > 0) { 
-        const lineSeries = chart.addLineSeries({ 
-          color: '#00d4ff', 
-          lineWidth: 2, 
-        }); 
-        lineSeries.setData(cumulativeData); 
-      } 
-    } else { 
-      // PnL histogram per trade - aggregate by timestamp 
-      const dataMap = new Map<number, { value: number; color: string }>(); 
+      if (cumulativeData.length > 0) {
+        const lineSeries = chart.addLineSeries({
+          color: "#00d4ff",
+          lineWidth: 2,
+        });
+        lineSeries.setData(cumulativeData);
+      }
+    } else {
+      // PnL histogram per trade - aggregate by timestamp
+      const dataMap = new Map<number, { value: number; color: string }>();
 
-      sortedFills 
-        .filter(f => f.closedPnl !== undefined) 
-        .forEach(f => { 
-          const time = Math.floor(f.time / 1000); 
-          const pnl = parseFloat(f.closedPnl || '0'); 
-          if (dataMap.has(time)) { 
-            // Sum PnL for same timestamp 
-            const existing = dataMap.get(time)!; 
-            const newValue = existing.value + pnl; 
-            dataMap.set(time, { 
-              value: newValue, 
-              color: newValue >= 0 ? '#10b981' : '#ef4444', 
-            }); 
-          } else { 
-            dataMap.set(time, { 
-              value: pnl, 
-              color: pnl >= 0 ? '#10b981' : '#ef4444', 
-            }); 
-          } 
-        }); 
+      sortedFills
+        .filter((f) => f.closedPnl !== undefined)
+        .forEach((f) => {
+          const time = Math.floor(f.time / 1000);
+          const pnl = parseFloat(f.closedPnl || "0");
+          if (dataMap.has(time)) {
+            // Sum PnL for same timestamp
+            const existing = dataMap.get(time)!;
+            const newValue = existing.value + pnl;
+            dataMap.set(time, {
+              value: newValue,
+              color: newValue >= 0 ? "#10b981" : "#ef4444",
+            });
+          } else {
+            dataMap.set(time, {
+              value: pnl,
+              color: pnl >= 0 ? "#10b981" : "#ef4444",
+            });
+          }
+        });
 
-      // Convert to array and sort by time (ascending) 
-      const histogramData: HistogramData[] = Array.from(dataMap.entries()) 
-        .sort((a, b) => a[0] - b[0]) 
-        .map(([time, data]) => ({ 
-          time: time as any, 
-          value: data.value, 
-          color: data.color, 
-        })); 
+      // Convert to array and sort by time (ascending)
+      const histogramData: HistogramData[] = Array.from(dataMap.entries())
+        .sort((a, b) => a[0] - b[0])
+        .map(([time, data]) => ({
+          time: time as any,
+          value: data.value,
+          color: data.color,
+        }));
 
-      if (histogramData.length > 0) { 
-        const histogramSeries = chart.addHistogramSeries({ 
-          color: '#00d4ff',
-        }); 
-        histogramSeries.setData(histogramData); 
-      } 
-    } 
+      if (histogramData.length > 0) {
+        const histogramSeries = chart.addHistogramSeries({
+          color: "#00d4ff",
+        });
+        histogramSeries.setData(histogramData);
+      }
+    }
 
-    chart.timeScale().fitContent(); 
+    chart.timeScale().fitContent();
 
-    // Handle resize 
-    const handleResize = () => { 
-      if (chartContainerRef.current) { 
-        chart.applyOptions({ width: chartContainerRef.current.clientWidth }); 
-      } 
-    }; 
+    // Handle resize
+    const handleResize = () => {
+      if (chartContainerRef.current) {
+        chart.applyOptions({ width: chartContainerRef.current.clientWidth });
+      }
+    };
 
-    window.addEventListener('resize', handleResize); 
+    window.addEventListener("resize", handleResize);
 
-    return () => { 
-      window.removeEventListener('resize', handleResize); 
-      chart.remove(); 
-    }; 
-  }, [fills, isLoading, chartType]); 
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      chart.remove();
+    };
+  }, [fills, isLoading, chartType]);
 
-  if (isLoading) { 
-    return ( 
-      <div className="bg-bg-card border border-border rounded-2xl p-6"> 
-        <div className="skeleton h-6 w-40 rounded mb-4"></div> 
-        <div className="skeleton h-[320px] rounded-xl"></div> 
-      </div> 
-    ); 
-  } 
+  if (isLoading) {
+    return (
+      <div className="bg-bg-card border border-border rounded-2xl p-6">
+        <div className="skeleton h-6 w-40 rounded mb-4"></div>
+        <div className="skeleton h-[320px] rounded-xl"></div>
+      </div>
+    );
+  }
 
-  if (!fills || fills.length === 0) { 
-    return null; 
-  } 
+  if (!fills || fills.length === 0) {
+    return null;
+  }
 
-  const hasPnL = fills.some(f => f.closedPnl !== undefined && parseFloat(f.closedPnl) !== 0); 
+  const hasPnL = fills.some(
+    (f) => f.closedPnl !== undefined && parseFloat(f.closedPnl) !== 0,
+  );
 
-  return ( 
-    <div className="bg-bg-card border border-border rounded-2xl p-6"> 
-      <div className="flex items-center justify-between mb-4"> 
-        <h3 className="font-display font-semibold text-text">Equity Curve</h3> 
-        <div className="flex gap-2"> 
-          <button 
-            onClick={() => setChartType('cumulative')} 
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all ${ 
-              chartType === 'cumulative' 
-                ? 'bg-accent text-bg' 
-                : 'bg-bg-elevated text-text-secondary hover:text-text'
-            }`} 
-          > 
-            Kumulativ 
-          </button> 
-          <button 
-            onClick={() => setChartType('histogram')} 
-            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all ${ 
-              chartType === 'histogram' 
-                ? 'bg-accent text-bg' 
-                : 'bg-bg-elevated text-text-secondary hover:text-text'
-            }`} 
-          > 
-            Pro Trade 
-          </button> 
-        </div> 
-      </div> 
+  return (
+    <div className="bg-bg-card border border-border rounded-2xl p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-display font-semibold text-text">Equity Curve</h3>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setChartType("cumulative")}
+            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all ${
+              chartType === "cumulative"
+                ? "bg-accent text-bg"
+                : "bg-bg-elevated text-text-secondary hover:text-text"
+            }`}
+          >
+            Kumulativ
+          </button>
+          <button
+            onClick={() => setChartType("histogram")}
+            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all ${
+              chartType === "histogram"
+                ? "bg-accent text-bg"
+                : "bg-bg-elevated text-text-secondary hover:text-text"
+            }`}
+          >
+            Pro Trade
+          </button>
+        </div>
+      </div>
 
-      {hasPnL ? ( 
-        <div ref={chartContainerRef} className="w-full h-[320px]" /> 
-      ) : ( 
-        <div className="h-[320px] flex items-center justify-center text-text-muted"> 
-          Keine geschlossenen Trades mit PnL-Daten 
-        </div> 
-      )} 
-    </div> 
-  ); 
+      {hasPnL ? (
+        <div ref={chartContainerRef} className="w-full h-[320px]" />
+      ) : (
+        <div className="h-[320px] flex items-center justify-center text-text-muted">
+          Keine geschlossenen Trades mit PnL-Daten
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default PnLChart;

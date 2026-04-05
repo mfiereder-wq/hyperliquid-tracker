@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap");
 
 :root {
   /* Dark Theme - Neon Finance */
@@ -10,33 +10,33 @@
   --bg-elevated: #111217;
   --bg-card: #16181f;
   --bg-hover: #1c1e27;
-  
+
   --border: #2a2d38;
   --border-accent: #3d4252;
-  
+
   --text: #f1f5f9;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  
+
   /* Hyperliquid Brand Colors */
   --accent: #00d4ff;
   --accent-glow: rgba(0, 212, 255, 0.3);
   --accent-dim: rgba(0, 212, 255, 0.1);
-  
+
   --profit: #10b981;
   --profit-glow: rgba(16, 185, 129, 0.3);
   --profit-dim: rgba(16, 185, 129, 0.1);
-  
+
   --loss: #ef4444;
   --loss-glow: rgba(239, 68, 68, 0.3);
   --loss-dim: rgba(239, 68, 68, 0.1);
-  
+
   --warning: #f59e0b;
   --premium: #a855f7;
-  
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
 * {
@@ -62,7 +62,7 @@ body {
 .bg-grid {
   position: fixed;
   inset: 0;
-  background-image: 
+  background-image:
     linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
   background-size: 60px 60px;
@@ -71,10 +71,14 @@ body {
 }
 
 .bg-grid::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(0, 212, 255, 0.08) 0%, transparent 50%);
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(0, 212, 255, 0.08) 0%,
+    transparent 50%
+  );
 }
 
 /* Typography */
@@ -147,16 +151,20 @@ body {
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px var(--accent-glow);
   }
   50% {
-    box-shadow: 0 0 40px var(--accent-glow), 0 0 60px var(--accent-glow);
+    box-shadow:
+      0 0 40px var(--accent-glow),
+      0 0 60px var(--accent-glow);
   }
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -174,7 +182,8 @@ body {
 }
 
 @keyframes gradient-shift {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -224,12 +233,24 @@ body {
   animation: fadeInUp 0.5s ease-out forwards;
 }
 
-.stagger-children.animate > *:nth-child(1) { animation-delay: 0.05s; }
-.stagger-children.animate > *:nth-child(2) { animation-delay: 0.1s; }
-.stagger-children.animate > *:nth-child(3) { animation-delay: 0.15s; }
-.stagger-children.animate > *:nth-child(4) { animation-delay: 0.2s; }
-.stagger-children.animate > *:nth-child(5) { animation-delay: 0.25s; }
-.stagger-children.animate > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-children.animate > *:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.stagger-children.animate > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.stagger-children.animate > *:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.stagger-children.animate > *:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.stagger-children.animate > *:nth-child(5) {
+  animation-delay: 0.25s;
+}
+.stagger-children.animate > *:nth-child(6) {
+  animation-delay: 0.3s;
+}
 
 /* Card Styles */
 .card {
@@ -247,7 +268,9 @@ body {
 
 .card-highlight {
   border-color: var(--accent);
-  box-shadow: 0 0 30px var(--accent-dim), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow:
+    0 0 30px var(--accent-dim),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .card-profit {
@@ -361,7 +384,12 @@ body {
 
 /* Gradient Text */
 .gradient-text {
-  background: linear-gradient(135deg, var(--accent), var(--profit), var(--accent));
+  background: linear-gradient(
+    135deg,
+    var(--accent),
+    var(--profit),
+    var(--accent)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -438,7 +466,7 @@ body {
 }
 
 .favorite-card::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, transparent 0%, var(--accent-dim) 100%);
@@ -458,7 +486,9 @@ body {
 
 .favorite-card.active {
   border-color: var(--accent);
-  box-shadow: 0 0 30px var(--accent-dim), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow:
+    0 0 30px var(--accent-dim),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 /* Empty State */
@@ -506,11 +536,11 @@ body {
   .bg-grid {
     background-size: 40px 40px;
   }
-  
+
   .stat-value {
     font-size: 1.5rem;
   }
-  
+
   .card {
     border-radius: 12px;
   }

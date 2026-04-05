@@ -2,7 +2,7 @@
 
 export interface Fill {
   coin: string;
-  side: 'B' | 'A'; // B = Buy, A = Sell
+  side: "B" | "A"; // B = Buy, A = Sell
   px: string; // Price
   sz: string; // Size
   time: number; // Timestamp in ms
@@ -35,7 +35,7 @@ export interface Order {
   coin: string;
   limitPx: string;
   oid: number;
-  side: 'B' | 'A';
+  side: "B" | "A";
   sz: string;
   timestamp: number;
   origSz: string;
@@ -43,7 +43,7 @@ export interface Order {
 
 export interface AssetPosition {
   position: Position;
-  type: 'oneWay';
+  type: "oneWay";
 }
 
 export interface Meta {
@@ -117,22 +117,25 @@ export interface PnLDataPoint {
 }
 
 // Time filter options
-export type TimeFilter = '24h' | '7d' | '30d' | '90d' | 'all';
+export type TimeFilter = "24h" | "7d" | "30d" | "90d" | "all";
 
-export function getTimeFilterRange(filter: TimeFilter): { startTime: number; endTime?: number } {
+export function getTimeFilterRange(filter: TimeFilter): {
+  startTime: number;
+  endTime?: number;
+} {
   const now = Date.now();
   const endTime = now;
-  
+
   switch (filter) {
-    case '24h':
+    case "24h":
       return { startTime: now - 24 * 60 * 60 * 1000, endTime };
-    case '7d':
+    case "7d":
       return { startTime: now - 7 * 24 * 60 * 60 * 1000, endTime };
-    case '30d':
+    case "30d":
       return { startTime: now - 30 * 24 * 60 * 60 * 1000, endTime };
-    case '90d':
+    case "90d":
       return { startTime: now - 90 * 24 * 60 * 60 * 1000, endTime };
-    case 'all':
+    case "all":
     default:
       return { startTime: 0 }; // All time
   }

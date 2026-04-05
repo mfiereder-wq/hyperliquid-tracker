@@ -34,7 +34,6 @@ export default function LeaderboardPage() {
 
       const result = await res.json();
       setData(result || []);
-
     } catch (err) {
       setError("Konnte Leaderboard-Daten nicht laden.");
     } finally {
@@ -51,11 +50,7 @@ export default function LeaderboardPage() {
   }
 
   if (error) {
-    return (
-      <div style={{ padding: 20, color: "red" }}>
-        {error}
-      </div>
-    );
+    return <div style={{ padding: 20, color: "red" }}>{error}</div>;
   }
 
   return (

@@ -1,7 +1,6 @@
-'use client';
+"use client";
 
-import { StatsCard } from './StatsCard';
-import { formatUSD, formatPercent, formatNumber } from '@/lib/api';
+import { formatUSD, formatPercent } from "@/lib/api";
 
 interface LongShortStatsProps {
   longTrades: number;
@@ -10,6 +9,7 @@ interface LongShortStatsProps {
   shortPnl: number;
   longWinRate: number;
   shortWinRate: number;
+  detailed?: boolean;
 }
 
 export function LongShortStats({
@@ -25,54 +25,85 @@ export function LongShortStats({
   const shortPercent = total > 0 ? (shortTrades / total) * 100 : 0;
 
   return (
-    <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-6">
-      <h3 className="text-lg font-semibold mb-4">Long vs Short</h3>
-      
+    <div className="bg-bg-card border border-border rounded-2xl p-4 sm:p-6 overflow-hidden">
+      <h3 className="font-display font-semibold text-text mb-4 text-base sm:text-lg">
+        Long vs Short
+      </h3>
+
       {/* Visual bar */}
-      <div className="h-3 rounded-full overflow-hidden bg-loss mb-4">
-        <div 
-          className="h-full bg-profit transition-all duration-500"
+      <div className="h-3 sm:h-4 rounded-full overflow-hidden bg-loss/20 mb-4">
+        <div
+          className="h-full bg-gradient-to-r from-profit to-profit-glow transition-all duration-500"
           style={{ width: `${longPercent}%` }}
         />
       </div>
-      
-      <div className="grid grid-cols-2 gap-6">
+
+      {/* Stats Grid - Mobile optimized */}
+      <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6">
         {/* Long Stats */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="badge badge-long">LONG</span>
-            <span className="text-sm text-[var(--muted)]">{longTrades} Trades ({formatPercent(longPercent - 50)})</span>
+        <div className="space-y-3 p-3 sm:p-4 rounded-xl bg-bg-elevated">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="badge badge-long text-xs sm:text-sm py-1.5 px-2.5">
+              LONG
+            </span>
+            <span className="text-xs sm:text-sm text-text-muted">
+              {longTrades} Trades ({Math.round(longPercent)}%)
+            </span>
           </div>
+
           <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-[var(--muted)]">PnL</span>
-              <span className={longPnl >= 0 ? 'profit font-semibold' : 'loss font-semibold'}>
+            <div className="flex justify-between items-baseline gap-2">
+              <span className="text-xs sm:text-sm text-text-muted">PnL</span>
+              <span
+                className={`font-mono font-semibold text-sm sm:text-base truncate ${longPnl >= 0 ? "text-profit" : "text-loss"}`}
+              >
+                {longPnl >= 0 ? "+" : ""}
                 {formatUSD(longPnl)}
               </span>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-[var(--muted)]">Win Rate</span>
-              <span className={longWinRate >= 50 ? 'profit' : ''}>{formatPercent(longWinRate)}</span>
+            <div className="flex justify-between items-baseline">
+              <span className="text-xs sm:text-sm text-text-muted">
+                Win Rate
+              </span>
+              <span
+                className={`font-semibold text-sm sm:text-base ${longWinRate >= 50 ? "text-profit" : "text-text"}`}
+              >
+                {formatPercent(longWinRate)}
+              </span>
             </div>
           </div>
         </div>
-        
+
         {/* Short Stats */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="badge badge-short">SHORT</span>
-            <span className="text-sm text-[var(--muted)]">{shortTrades} Trades ({formatPercent(shortPercent - 50)})</span>
+        <div className="space-y-3 p-3 sm:p-4 rounded-xl bg-bg-elevated">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="badge badge-short text-xs sm:text-sm py-1.5 px-2.5">
+              SHORT
+            </span>
+            <span className="text-xs sm:text-sm text-text-muted">
+              {shortTrades} Trades ({Math.round(shortPercent)}%)
+            </span>
           </div>
+
           <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-[var(--muted)]">PnL</span>
-              <span className={shortPnl >= 0 ? 'profit font-semibold' : 'loss font-semibold'}>
+            <div className="flex justify-between items-baseline gap-2">
+              <span className="text-xs sm:text-sm text-text-muted">PnL</span>
+              <span
+                className={`font-mono font-semibold text-sm sm:text-base truncate ${shortPnl >= 0 ? "text-profit" : "text-loss"}`}
+              >
+                {shortPnl >= 0 ? "+" : ""}
                 {formatUSD(shortPnl)}
               </span>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-[var(--muted)]">Win Rate</span>
-              <span className={shortWinRate >= 50 ? 'profit' : ''}>{formatPercent(shortWinRate)}</span>
+            <div className="flex justify-between items-baseline">
+              <span className="text-xs sm:text-sm text-text-muted">
+                Win Rate
+              </span>
+              <span
+                className={`font-semibold text-sm sm:text-base ${shortWinRate >= 50 ? "text-profit" : "text-text"}`}
+              >
+                {formatPercent(shortWinRate)}
+              </span>
             </div>
           </div>
         </div>
@@ -80,3 +111,5 @@ export function LongShortStats({
     </div>
   );
 }
+
+export default LongShortStats;
